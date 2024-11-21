@@ -1,7 +1,7 @@
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import get_user_profile,CustomTokenObtainPairView,CustomRefreshToekn,register,authenticated
+from .views import get_user_profile,CustomTokenObtainPairView,CustomRefreshToekn,register,authenticated,toggleFollow
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -13,5 +13,6 @@ urlpatterns = [
     path('token/refresh/', CustomRefreshToekn.as_view(), name='token_refresh'),
     path('register/', register, name='register'),
     path('authenticated/', authenticated),
+    path('toggle_follow/', toggleFollow),
   
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

@@ -105,16 +105,27 @@ def get_user_profile(request,pk):
         return Response({**serializer.data,'is_our_profile':request.user.username == user.username,'following':following})
     except:
         return Response({'error':"error getting user data"})
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def toggleFollow(request):
+    try:
+        # Retrieve the logged-in user and the target user
+        my_user = MyUser.objects.get(username=request.user.username)
+        user_to_follow = MyUser.objects.get(username=request.data['username'])
+    except MyUser.DoesNotExist as e:
+        return Response({"error": "User does not exist"}, status=404)
+    except KeyError as e:
+        return Response({"error": "Username is required in the request"}, status=400)
+    except Exception as e:
+        return Response({"error": f"Unexpected error: {str(e)}"}, status=500)
 
-
-# class JobGiverOnlyView(APIView):
-#     permission_classes = [IsAuthenticated, IsJobGiver]
-
-#     def get(self, request):
-#         return Response({"message": "Hello, Job Giver!"})
-
-# class JobSeekerOnlyView(APIView):
-#     permission_classes = [IsAuthenticated, IsJobSeeker]
-
-#     def get(self, request):
-#         return Response({"message": "Hello, Job Seeker!"})
+    try:
+        # Toggle the follow/unfollow status
+        if my_user in user_to_follow.followers.all():
+            user_to_follow.followers.remove(my_user)
+            return Response({"now_following": False}, status=200)
+        else:
+            user_to_follow.followers.add(my_user)
+            return Response({"now_following": True}, status=200)
+    except Exception as e:
+        return Response({"error": f"Error toggling follow status: {str(e)}"}, status=500)

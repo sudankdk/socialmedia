@@ -3,9 +3,9 @@ import { UseAuth } from "../Context/UseAuth";
 
 const PrivateRoute = ({ children }) => {
   const nav = useNavigate();
-  const { auth, authLoading } = UseAuth();
+  const { auth, loading } = UseAuth();
 
-  if (authLoading) {
+  if (loading) {
     return <p>Loading....</p>;
   }
   if (auth) {

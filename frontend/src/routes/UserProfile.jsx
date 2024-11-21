@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 // import { useParams } from "react-router-dom";
-import { get_user_profile_data } from "../api/EndPoint";
+import { follow_user, get_user_profile_data } from "../api/EndPoint";
 import { SERVER_URL } from "../Constants/Constants";
 
 const UserProfile = () => {
@@ -33,6 +33,18 @@ const UserDetails = ({ username }) => {
 
   const [isOurProfile, setIsOurProfile] = useState(false);
   const [following, setFollowing] = useState(false);
+
+  const handleFollow = async () => {
+    const data = await follow_user(username);
+    console.log("yo ho data", data);
+    if (data.now_following) {
+      setFollowerCount(followingCount + 1);
+      setFollowing(true);
+    } else {
+      setFollowerCount(followingCount - 1);
+      setFollowing(false);
+    }
+  };
 
   useEffect(() => {
     const fetchdata = async () => {
@@ -89,7 +101,10 @@ const UserDetails = ({ username }) => {
           Edit
         </button>
       ) : (
-        <button className="w-24 bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        <button
+          className="w-24 bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={handleFollow}
+        >
           {following ? "Unfollow" : "Follow"}
         </button>
       )}

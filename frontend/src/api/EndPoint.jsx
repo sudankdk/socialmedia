@@ -28,8 +28,6 @@ api.interceptors.response.use(
 
 export const get_user_profile_data = async (username) => {
   try {
-   
-
     const response = await api.get(`/user_data/${username}`);
 
     console.log(response.data);
@@ -113,5 +111,14 @@ export const get_auth = async () => {
   } catch (error) {
     console.error("Failed auth:", error);
     throw error;
+  }
+};
+
+export const follow_user = async (username) => {
+  try {
+    const response = await api.post("toggle_follow/", { username: username });
+    return response.data;
+  } catch (error) {
+    console.log(error);
   }
 };
