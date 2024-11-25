@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 # from .permissions import IsJobGiver, IsJobSeeker
 
 from .models import MyUser
-from .serializer import MyUserSerializer,UserRegisterSerializer
+from .serializer import MyUserSerializer,UserRegisterSerializer,PostSerializer
 
 
 from rest_framework_simplejwt.views import (
@@ -129,3 +129,22 @@ def toggleFollow(request):
             return Response({"now_following": True}, status=200)
     except Exception as e:
         return Response({"error": f"Error toggling follow status: {str(e)}"}, status=500)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_post(self, pk):
+    try:
+        try:
+            user=MyUser.objects.get(username=pk)
+            # print(user)
+        except:
+            return Response({'error':'user does not exist'})
+        
+        posts= user.posts.all().order_by('-created_at')
+        
+        serializer= PostSerializer(posts, many=True)
+        
+        return Response(serializer.data)
+    except:
+        

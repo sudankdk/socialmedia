@@ -20,3 +20,10 @@ class MyUser(AbstractUser):
 # the reason symmnetical is false beacuse i can be following someone but that perosn doesnt have to be following me
     def __str__(self):
           return f"{self.username} "
+      
+class Post(models.Model):
+    user= models.ForeignKey(MyUser, on_delete=models.CASCADE,related_name='posts')
+    description = models.CharField(max_length=400)
+    created_at= models.DateField(auto_now_add=True)
+    likes=models.ManyToManyField(MyUser,related_name='Post_likes',blank=True)
+    
